@@ -4,6 +4,7 @@ import com.alkemy.disney.disney.dto.CharacterDTOFilter;
 import com.alkemy.disney.disney.entity.CharacterEntity;
 import com.alkemy.disney.disney.entity.MovieEntity;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class CharacterSpecification {
 
     public Specification<CharacterEntity> getByFilters(CharacterDTOFilter filterDTO){

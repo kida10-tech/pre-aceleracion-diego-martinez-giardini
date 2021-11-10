@@ -1,23 +1,31 @@
 package com.alkemy.disney.disney.service;
 
+import com.alkemy.disney.disney.dto.MovieDTOBasic;
 import com.alkemy.disney.disney.entity.MovieEntity;
 import com.alkemy.disney.disney.dto.MovieDTO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MovieService {
 
-    MovieDTO save(MovieDTO movie); //Save the country
+    MovieDTO save(MovieDTO movie); //Save movie
 
-    List<MovieDTO> getAllMovies(); //List all the countries
+    List<MovieDTO> getAllMovies(); //List all movies
 
-    public void delete(Long id);
+    List<MovieDTOBasic> getBasicList(); //Basic list movies
 
-    public MovieDTO modify(Long id, MovieDTO movieDTO);
+    void delete(Long id);
 
-    public void addCharacter(Long movieId, Long characterId);
+    MovieDTO modify(Long id, MovieDTO movieDTO);
 
-    public List<MovieDTO> getByFilters(String name, String genre, String order);
+    void addCharacter(Long movieId, Long characterId);
 
-    public MovieEntity getById(Long id);
+    MovieEntity getById(Long id);
+
+    MovieDTO getByDetails(Long id);
+
+    void addGenre(Long movieId, Long genreId);
+
+    List<MovieDTO> getByFilters(String name, Set<Long> genre, String order);
 }

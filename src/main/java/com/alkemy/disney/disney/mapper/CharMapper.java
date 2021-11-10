@@ -30,6 +30,8 @@ public class CharMapper {
 
     public CharacterDTO charEntity2DTO(CharacterEntity characterEntity, boolean loadMovie) {
         CharacterDTO dto = new CharacterDTO();
+
+        dto.setId(characterEntity.getId());
         dto.setName(characterEntity.getName());
         dto.setImage(characterEntity.getImage());
         dto.setAge(characterEntity.getAge());
@@ -63,7 +65,7 @@ public class CharMapper {
         return entitySet;
     }
 
-    public List<CharacterDTOBasic> iconEntityList2DTOBasicList(Collection<CharacterEntity> entities) {
+    public List<CharacterDTOBasic> basicEntityList2DTOBasicList(Collection<CharacterEntity> entities) {
         List<CharacterDTOBasic> basicList = new ArrayList<>();
         CharacterDTOBasic dtoBasic;
 
@@ -72,10 +74,30 @@ public class CharMapper {
             dtoBasic.setId(entity.getId());
             dtoBasic.setName(entity.getName());
             dtoBasic.setImage(entity.getImage());
+
             basicList.add(dtoBasic);
         }
         return basicList;
     }
+
+    // === Entity -> BasicDTO ===
+    private CharacterDTOBasic charEntity2BasicDTO(CharacterEntity charEntity) {
+        CharacterDTOBasic dto = new CharacterDTOBasic();
+
+        dto.setImage(charEntity.getImage());
+        dto.setName(charEntity.getName());
+        return dto;
+    }
+
+    // === BasicList<Entity> -> BasicList<DTO> ===
+//    public List<CharacterDTOBasic> basicEntityList2DTOList(List<CharacterEntity> entities) {
+//        List<CharacterDTOBasic> listDTO = new ArrayList<>();
+//
+//        for (CharacterEntity charEntity : entities) {
+//            listDTO.add(this.charEntity2BasicDTO(charEntity));
+//        }
+//        return listDTO;
+//    }
 
 
 

@@ -9,8 +9,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "disney_character")
-@SQLDelete(sql = "UPDATE disney_character SET deleted = true WHERE id=?") //This query provide the soft delete, as an update over icon
+@Table(name = "characters")
+@SQLDelete(sql = "UPDATE characters SET deleted = true WHERE id=?") //This query provide the soft delete, as an update over icon
 @Where(clause = "deleted=false")
 @Getter
 @Setter
@@ -28,7 +28,7 @@ public class CharacterEntity {
     private Double weight;
     private String biography;
 
-    @ManyToMany(mappedBy = "characters", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "characters", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     //@JoinColumn(name = "movie_id", updatable = false)
     private List<MovieEntity> movies = new ArrayList<>();
 

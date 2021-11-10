@@ -2,10 +2,17 @@ package com.alkemy.disney.disney.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+
+@Table(name = "genres")
+@SQLDelete(sql = "UPDATE genres SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
 @Getter
 @Setter
 @Entity
@@ -17,8 +24,10 @@ public class GenreEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(updatable = false)
-    private List<MovieEntity> movies;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "movieGenres")
+    private List<MovieEntity> movies = new ArrayList<>();
+
+    // Soft Delete:
+    private boolean deleted = Boolean.FALSE;
 
 }

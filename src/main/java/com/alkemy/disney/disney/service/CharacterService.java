@@ -1,5 +1,6 @@
 package com.alkemy.disney.disney.service;
 
+import com.alkemy.disney.disney.dto.CharacterDTOBasic;
 import com.alkemy.disney.disney.entity.CharacterEntity;
 import com.alkemy.disney.disney.dto.CharacterDTO;
 
@@ -12,6 +13,8 @@ import java.util.Set;
 public interface CharacterService {
 
     public List<CharacterDTO> getAll();
+
+    List<CharacterDTOBasic> getBasicCharList();
 
     public CharacterDTO modify(Long id, CharacterDTO charDTO);
 

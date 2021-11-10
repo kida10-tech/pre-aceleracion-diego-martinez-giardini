@@ -1,6 +1,7 @@
 package com.alkemy.disney.disney.service.implement;
 
 import com.alkemy.disney.disney.dto.CharacterDTO;
+import com.alkemy.disney.disney.dto.CharacterDTOBasic;
 import com.alkemy.disney.disney.dto.CharacterDTOFilter;
 import com.alkemy.disney.disney.entity.CharacterEntity;
 import com.alkemy.disney.disney.entity.MovieEntity;
@@ -40,11 +41,18 @@ public class CharacterServiceImplement implements CharacterService {
     }
 
     @Override
+    public List<CharacterDTOBasic> getBasicCharList() {
+        List<CharacterEntity> charList = charRepository.findAll();
+        List<CharacterDTOBasic> resultDTO = charMapper.basicEntityList2DTOBasicList(charList);
+        return resultDTO;
+    }
+
+    @Override
     public CharacterDTO modify(Long id, CharacterDTO charDTO) {
         CharacterEntity savedChar = this.getById(id);
 
         savedChar.setName(charDTO.getName());
-        savedChar.setImage(charDTO.getName());
+        savedChar.setImage(charDTO.getImage());
         savedChar.setAge(charDTO.getAge());
         savedChar.setWeight(charDTO.getWeight());
         savedChar.setBiography(charDTO.getBiography());
@@ -121,4 +129,5 @@ public class CharacterServiceImplement implements CharacterService {
         charEntity.removeMovie(movie);
         this.charRepository.save(charEntity);
     }
+
 }

@@ -2,6 +2,7 @@ package com.alkemy.disney.disney.mapper;
 
 import com.alkemy.disney.disney.dto.CharacterDTO;
 import com.alkemy.disney.disney.dto.MovieDTO;
+import com.alkemy.disney.disney.dto.MovieDTOBasic;
 import com.alkemy.disney.disney.entity.CharacterEntity;
 import com.alkemy.disney.disney.entity.MovieEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class MovieMapper {
 
     @Autowired
     private CharMapper charMapper;
+    @Autowired
+    private GenreMapper genreMapper;
 
     public MovieEntity movieDTO2Entity(MovieDTO dto, boolean loadChar) {
         MovieEntity movieEntity = new MovieEntity();
@@ -33,15 +36,14 @@ public class MovieMapper {
         movieEntity.setCreationDate(transformedDate);
 
         movieEntity.setStar(dto.getStar());
-        movieEntity.setGenreId(dto.getGenreId());
 
-        if(loadChar) {
-            Set<CharacterEntity> entitySet = new HashSet<>();
-            for (CharacterDTO characterDTO: dto.getCharacters()) {
-                entitySet.add(charMapper.charDTO2Entity(characterDTO));
-            }
-            movieEntity.setCharacters(entitySet);
-        }
+//        if(loadChar) {
+//            Set<CharacterEntity> entitySet = new HashSet<>();
+//            for (CharacterDTO characterDTO: dto.getCharacters()) {
+//                entitySet.add(charMapper.charDTO2Entity(characterDTO));
+//            }
+//            movieEntity.setCharacters(entitySet);
+//        }
         return movieEntity;
     }
 
@@ -49,6 +51,7 @@ public class MovieMapper {
     //Aqui coloco un boolean para poder mostrar
     public MovieDTO movieEntity2DTO(MovieEntity movieEntity, boolean loadChar) {
         MovieDTO dto = new MovieDTO();
+
         dto.setId(movieEntity.getId());
         dto.setImage(movieEntity.getImage());
         dto.setTitle(movieEntity.getTitle());
@@ -58,14 +61,18 @@ public class MovieMapper {
         dto.setCreationDate(formatDate);
 
         dto.setStar(movieEntity.getStar());
-        dto.setGenreId(movieEntity.getGenreId());
+
+//        if(loadChar) {
+//            Set<CharacterDTO> dtoSet = new HashSet<>();
+//            for (CharacterEntity character: movieEntity.getCharacters()) {
+//                dtoSet.add(charMapper.charEntity2DTO(character, false));
+//            }
+//            dto.setCharacters(dtoSet);
+//        }
 
         if(loadChar) {
-            Set<CharacterDTO> dtoSet = new HashSet<>();
-            for (CharacterEntity character: movieEntity.getCharacters()) {
-                dtoSet.add(charMapper.charEntity2DTO(character, false));
-            }
-            dto.setCharacters(dtoSet);
+            dto.setCharacters(charMapper.charEntityList2DTOList(movieEntity.getCharacters(), false));
+            dto.setGenres(genreMapper.genreEntityList2DTOList(movieEntity.getMovieGenres()));
         }
 
         return dto;
@@ -87,6 +94,29 @@ public class MovieMapper {
             entities.add(this.movieDTO2Entity(dto, load));
         }
         return entities;
+    }
+
+    //=== Entity -> BasicDTO ===
+    public MovieDTOBasic entity2BasicDTO(MovieEntity movieEntity) {
+        MovieDTOBasic dto = new MovieDTOBasic();
+
+        dto.setImage(movieEntity.getImage());
+        dto.setTitle(movieEntity.getTitle());
+
+        LocalDate date = movieEntity.getCreationDate();//1. Get the original format date
+        String formatDate = date.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")); //2. Convert it to string
+        dto.setCreationDate(formatDate);
+
+        return dto;
+    }
+
+    //=== List<Entity> -> List<BasicDTO> ===
+    public List<MovieDTOBasic> entityList2BasicDTO(List<MovieEntity> entities) {
+        List<MovieDTOBasic> newList = new ArrayList<>();
+        for(MovieEntity entity : entities) {
+            newList.add(this.entity2BasicDTO(entity));
+        }
+        return newList;
     }
 
 }

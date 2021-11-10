@@ -3,6 +3,7 @@ package com.alkemy.disney.disney.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -10,5 +11,5 @@ import java.util.Set;
 public class GenreDTO {
     private Long id;
     private String name;
-    private Set<MovieDTO> movies;
+    private List<MovieDTO> movies;
 }

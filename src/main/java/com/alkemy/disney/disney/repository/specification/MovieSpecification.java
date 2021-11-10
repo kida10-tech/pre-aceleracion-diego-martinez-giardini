@@ -1,11 +1,16 @@
 package com.alkemy.disney.disney.repository.specification;
 
 import com.alkemy.disney.disney.dto.MovieDTOFilter;
+import com.alkemy.disney.disney.entity.GenreEntity;
 import com.alkemy.disney.disney.entity.MovieEntity;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,37 +20,38 @@ public class MovieSpecification {
 
     public Specification<MovieEntity> getByFilters(MovieDTOFilter filterDTO){
 
-        return (root, query, criteriaBuilder)-> {
+        // Lambda Function:
+        return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            // == Name ==
             if(StringUtils.hasLength(filterDTO.getName())) {
                 predicates.add(
                         criteriaBuilder.like(
                                 criteriaBuilder.lower(root.get("name")),
-                                "%" + filterDTO.getName().toLowerCase() + "%")
+                                "%" + filterDTO.getName().toLowerCase() + "%"
+                        )
                 );
             }
 
-            //If Continent hasLength(if it exist).
-            if(StringUtils.hasLength(filterDTO.getGenre())) {
-                Long myId = Long.parseLong(filterDTO.getGenre());
-                System.out.println(myId);
-                predicates.add(
-                        criteriaBuilder.equal(root.get("continent_id"), myId)
-                );
+            if(!CollectionUtils.isEmpty(filterDTO.getGenre())) {
+                Join<MovieEntity, GenreEntity> join = root.join("movieGenres", JoinType.INNER);
+                Expression<String> genresId = join.get("id");
+                predicates.add(genresId.in(filterDTO.getGenre()));
             }
+
             query.distinct(true);
 
-            String orderByField = "name"; //Order by ASC
+            String orderByField = "name";
             query.orderBy(
                     filterDTO.isASC() ?
-                            criteriaBuilder.asc(root.get(orderByField))
-                            :
+                            criteriaBuilder.asc(root.get(orderByField)) :
                             criteriaBuilder.desc(root.get(orderByField))
             );
 
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0])); //Return predicate as a list
 
+            // MAIN RETURN:
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }

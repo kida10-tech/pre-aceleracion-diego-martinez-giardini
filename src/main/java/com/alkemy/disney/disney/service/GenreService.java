@@ -9,4 +9,7 @@ public interface GenreService {
 
     List<GenreDTO> getAllGenres();
 
+    GenreDTO modify(Long id, GenreDTO genreDTO);
+
+    void deleteGenreById(Long id);
 }

@@ -7,7 +7,9 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "movie")
@@ -23,21 +25,30 @@ public class MovieEntity {
     private Long id;
     private String image;
 
-    @Column(nullable = false)
     private String title;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "date_of_creation")
     private LocalDate creationDate;
     private Integer star;
 
-    @Column(name = "genre_id", nullable = false)
-    private Long genreId;
+    // Soft Delete:
+    private boolean deleted = Boolean.FALSE;
+
+//    @Column(name = "genre_id", nullable = false)
+//    private Long genreId;
 
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}) //genera tabla intermedia para relacionar tablas
-    @JoinTable(name = "character_movie",
+    @JoinTable(name = "movie_chars",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "char_id"))
-    private Set<CharacterEntity> characters = new HashSet<>();
+    private List<CharacterEntity> characters = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,}, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "movie_genres",
+            joinColumns= @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private List<GenreEntity> movieGenres = new ArrayList<>();
 
     //Add character to movie
     public void addCharacter(CharacterEntity character) {
@@ -47,6 +58,15 @@ public class MovieEntity {
     //Delete character from movie
     public void removeCharacter(CharacterEntity character) {
         this.characters.remove(character);
+    }
+
+    // Genres:
+    public void addGenre(GenreEntity genre) {
+        this.movieGenres.add(genre);
+    }
+
+    public void removeGenre(GenreEntity genre) {
+        this.movieGenres.remove(genre);
     }
 
     @Override
