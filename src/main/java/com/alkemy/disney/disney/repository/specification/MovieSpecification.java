@@ -18,33 +18,35 @@ import java.util.List;
 @Component
 public class MovieSpecification {
 
-    public Specification<MovieEntity> getByFilters(MovieDTOFilter filterDTO){
+    public Specification<MovieEntity> getFiltered(MovieDTOFilter movieFilters){
 
         // Lambda Function:
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             // == Name ==
-            if(StringUtils.hasLength(filterDTO.getName())) {
+            if(StringUtils.hasLength(movieFilters.getTitle())) {
                 predicates.add(
                         criteriaBuilder.like(
-                                criteriaBuilder.lower(root.get("name")),
-                                "%" + filterDTO.getName().toLowerCase() + "%"
+                                criteriaBuilder.lower(root.get("title")),
+                                "%" + movieFilters.getTitle().toLowerCase() + "%"
                         )
                 );
             }
 
-            if(!CollectionUtils.isEmpty(filterDTO.getGenre())) {
+            // == Genre ==
+            if(!CollectionUtils.isEmpty(movieFilters.getGenre())) {
                 Join<MovieEntity, GenreEntity> join = root.join("movieGenres", JoinType.INNER);
                 Expression<String> genresId = join.get("id");
-                predicates.add(genresId.in(filterDTO.getGenre()));
+                predicates.add(genresId.in(movieFilters.getGenre()));
             }
 
             query.distinct(true);
 
-            String orderByField = "name";
+            // == Order ==
+            String orderByField = "title";
             query.orderBy(
-                    filterDTO.isASC() ?
+                    movieFilters.isASC() ?
                             criteriaBuilder.asc(root.get(orderByField)) :
                             criteriaBuilder.desc(root.get(orderByField))
             );

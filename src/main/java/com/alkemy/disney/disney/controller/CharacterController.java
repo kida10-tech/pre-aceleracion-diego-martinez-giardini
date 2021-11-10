@@ -2,6 +2,7 @@ package com.alkemy.disney.disney.controller;
 
 import com.alkemy.disney.disney.dto.CharacterDTO;
 import com.alkemy.disney.disney.service.CharacterService;
+import com.alkemy.disney.disney.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ public class CharacterController {
 
     @Autowired
     private CharacterService characterService;
+    @Autowired
+    private MovieService movieService;
 
     @Autowired
     public CharacterController(CharacterService characterService) {
@@ -36,7 +39,7 @@ public class CharacterController {
         return ResponseEntity.ok(charDTO);
     }
 
-    @GetMapping
+    @GetMapping("/filters")
     public ResponseEntity<List<CharacterDTO>> getDetailsByFilter(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer age,
@@ -54,8 +57,8 @@ public class CharacterController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CharacterDTO> update(@PathVariable Long id, @RequestBody CharacterDTO iconDTO) {
-        CharacterDTO result = this.characterService.modify(id, iconDTO);
+    public ResponseEntity<CharacterDTO> update(@PathVariable Long id, @RequestBody CharacterDTO charDTO) {
+        CharacterDTO result = this.characterService.modify(id, charDTO);
         return ResponseEntity.ok().body(result);
     }
 
@@ -77,4 +80,15 @@ public class CharacterController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PostMapping("/{movieId}/character/{charId}")
+    public ResponseEntity<Void> addCharacter(@PathVariable Long movieId, @PathVariable Long charId){
+        movieService.addCharacter(movieId, charId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/{movieId}/genre/{genreId}")
+    public ResponseEntity<Void> addGenre(@PathVariable Long movieId, @PathVariable Long genreId){
+        movieService.addGenre(movieId, genreId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }

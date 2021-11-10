@@ -32,23 +32,27 @@ public class CharacterSpecification {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + filterDTO.getName().toLowerCase() + "%"));
             }
 
-            //Date
-//            if(StringUtils.hasLength(filterDTO.getName())) {
-//
-//                //String to LocalDate
-//                String dateToParse = filterDTO.getDate();
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-//                LocalDate date = LocalDate.parse(dateToParse, formatter);
-//
-//                predicates.add(criteriaBuilder.equal(root.<LocalDate>get("created"),date));
-//            }
-
-            if(!CollectionUtils.isEmpty(filterDTO.getMovies())) { //if CountryId not empty
-                Join<MovieEntity, CharacterEntity> toBeJoined = root.join("movies", JoinType.INNER);
-                Expression<String> paisesId = toBeJoined.get("id");
-
-                predicates.add(paisesId.in(filterDTO.getMovies()));
+            if(filterDTO.getAge() != null) {
+                predicates.add(
+                        criteriaBuilder.equal(root.get("age"), filterDTO.getAge()								)
+                );
             }
+
+            if(!CollectionUtils.isEmpty(filterDTO.getMovies())) {
+                Join<CharacterEntity, MovieEntity> join = root.join("characterMovies", JoinType.INNER);
+                Expression<String> moviesId = join.get("id");
+                predicates.add(moviesId.in(filterDTO.getMovies()));
+            }
+
+
+
+
+//            if(!CollectionUtils.isEmpty(filterDTO.getMovies())) { //if CountryId not empty
+//                Join<MovieEntity, CharacterEntity> toBeJoined = root.join("movies", JoinType.INNER);
+//                Expression<String> paisesId = toBeJoined.get("id");
+//
+//                predicates.add(paisesId.in(filterDTO.getMovies()));
+//            }
 
             //Remove duplicates
             query.distinct(true);

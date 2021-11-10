@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class MovieMapper {
@@ -72,7 +70,7 @@ public class MovieMapper {
 
         if(loadChar) {
             dto.setCharacters(charMapper.charEntityList2DTOList(movieEntity.getCharacters(), false));
-            dto.setGenres(genreMapper.genreEntityList2DTOList(movieEntity.getMovieGenres()));
+            dto.setGenres(genreMapper.genreEntityList2DTOList(movieEntity.getGenres()));
         }
 
         return dto;
@@ -96,7 +94,6 @@ public class MovieMapper {
         return entities;
     }
 
-    //=== Entity -> BasicDTO ===
     public MovieDTOBasic entity2BasicDTO(MovieEntity movieEntity) {
         MovieDTOBasic dto = new MovieDTOBasic();
 
@@ -110,7 +107,6 @@ public class MovieMapper {
         return dto;
     }
 
-    //=== List<Entity> -> List<BasicDTO> ===
     public List<MovieDTOBasic> entityList2BasicDTO(List<MovieEntity> entities) {
         List<MovieDTOBasic> newList = new ArrayList<>();
         for(MovieEntity entity : entities) {

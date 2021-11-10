@@ -24,7 +24,7 @@ public class GenreEntity {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "movieGenres")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "genres")
     private List<MovieEntity> movies = new ArrayList<>();
 
     // Soft Delete:

@@ -8,9 +8,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Table(name = "movie")
 @SQLDelete(sql = "UPDATE movie SET deleted = true WHERE id=?")
@@ -43,30 +41,27 @@ public class MovieEntity {
             inverseJoinColumns = @JoinColumn(name = "char_id"))
     private List<CharacterEntity> characters = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "movie_genres",
             joinColumns= @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private List<GenreEntity> movieGenres = new ArrayList<>();
+    private List<GenreEntity> genres = new ArrayList<>();
 
-    //Add character to movie
     public void addCharacter(CharacterEntity character) {
         this.characters.add(character);
     }
-
-    //Delete character from movie
+    
     public void removeCharacter(CharacterEntity character) {
         this.characters.remove(character);
     }
 
-    // Genres:
     public void addGenre(GenreEntity genre) {
-        this.movieGenres.add(genre);
+        this.genres.add(genre);
     }
 
     public void removeGenre(GenreEntity genre) {
-        this.movieGenres.remove(genre);
+        this.genres.remove(genre);
     }
 
     @Override

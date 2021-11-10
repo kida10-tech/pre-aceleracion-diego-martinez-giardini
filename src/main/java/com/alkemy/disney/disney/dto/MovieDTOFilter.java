@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class MovieDTOFilter {
 
-    private String name;
+    private String title;
     private Set<Long> genre;
     private String order;
 

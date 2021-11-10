@@ -100,7 +100,7 @@ public class MovieServiceImplement implements MovieService {
     @Override
     public List<MovieDTO> getByFilters(String title, Set<Long> genre, String order) {
         MovieDTOFilter movieFilters = new MovieDTOFilter(title, genre, order);
-        List<MovieEntity> entityList = movieRepository.findAll(movieSpecification.getByFilters(movieFilters));
+        List<MovieEntity> entityList = movieRepository.findAll(movieSpecification.getFiltered(movieFilters));
         List<MovieDTO> result = movieMapper.movieEntityList2DTOList(entityList, true);
         return result;
     }
