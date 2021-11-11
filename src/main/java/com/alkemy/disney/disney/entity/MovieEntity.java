@@ -51,7 +51,7 @@ public class MovieEntity {
     public void addCharacter(CharacterEntity character) {
         this.characters.add(character);
     }
-    
+
     public void removeCharacter(CharacterEntity character) {
         this.characters.remove(character);
     }
